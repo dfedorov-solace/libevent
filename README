@@ -1,57 +1,15 @@
-To build libevent, type
+This is a branch made from the "patches-1.4" branch of libevent.
 
-$ ./configure && make
+I needed to build 64-bit binaries of libevent version 1.4.X 
+on Windows 7 with Visual Studio 2015, so here it is.
 
-     (If you got libevent from the subversion repository, you will
-      first need to run the included "autogen.sh" script in order to
-      generate the configure script.)
+The regress project still doesn't build and if I can avoid fixing it, I will.
 
-Install as root via
+This branch was not verified on any other platforms and it won't.
 
-# make install
+Keep your stick on the ice!
 
-You can run the regression tests by
-
-$ make verify
-
-Before, reporting any problems, please run the regression tests.
-
-To enable the low-level tracing build the library as:
-
-CFLAGS=-DUSE_DEBUG ./configure [...]
-
-Acknowledgements:
------------------
-
-The following people have helped with suggestions, ideas, code or
-fixing bugs:
-
-  Alejo
-  Weston Andros Adamson
-  William Ahern
-  Stas Bekman
-  Andrew Danforth
-  Mike Davis
-  Shie Erlich
-  Alexander von Gernler
-  Artur Grabowski
-  Aaron Hopkins
-  Claudio Jeker
-  Scott Lamb
-  Adam Langley
-  Philip Lewis
-  David Libenzi
-  Nick Mathewson
-  Andrey Matveev
-  Richard Nyberg
-  Jon Oberheide
-  Phil Oleson
-  Dave Pacheco
-  Tassilo von Parseval
-  Pierre Phaneuf
-  Jon Poland
-  Bert JW Regeer
-  Dug Song
-  Taral
-
-If I have forgotten your name, please contact me.
+Dmitri Fedorov
+May 2016
+Solace Systems
+Ottawa, Canada
