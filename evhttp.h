@@ -187,55 +187,55 @@ enum evhttp_request_kind { EVHTTP_REQUEST, EVHTTP_RESPONSE };
  */
 struct evhttp_request {
 #if defined(TAILQ_ENTRY)
-	TAILQ_ENTRY(evhttp_request) next;
+    TAILQ_ENTRY(evhttp_request) next;
 #else
 struct {
-	struct evhttp_request *tqe_next;
-	struct evhttp_request **tqe_prev;
+    struct evhttp_request *tqe_next;
+    struct evhttp_request **tqe_prev;
 }       next;
 #endif
 
-	/* the connection object that this request belongs to */
-	struct evhttp_connection *evcon;
-	int flags;
+    /* the connection object that this request belongs to */
+    struct evhttp_connection *evcon;
+    int flags;
 #define EVHTTP_REQ_OWN_CONNECTION	0x0001
 #define EVHTTP_PROXY_REQUEST		0x0002
 
-	struct evkeyvalq *input_headers;
-	struct evkeyvalq *output_headers;
+    struct evkeyvalq *input_headers;
+    struct evkeyvalq *output_headers;
 
-	/* address of the remote host and the port connection came from */
-	char *remote_host;
-	u_short remote_port;
+    /* address of the remote host and the port connection came from */
+    char *remote_host;
+    u_short remote_port;
 
-	enum evhttp_request_kind kind;
-	enum evhttp_cmd_type type;
+    enum evhttp_request_kind kind;
+    enum evhttp_cmd_type type;
 
-	char *uri;			/* uri after HTTP request was parsed */
+    char *uri;			/* uri after HTTP request was parsed */
 
-	char major;			/* HTTP Major number */
-	char minor;			/* HTTP Minor number */
+    char major;			/* HTTP Major number */
+    char minor;			/* HTTP Minor number */
 
-	int response_code;		/* HTTP Response code */
-	char *response_code_line;	/* Readable response */
+    int response_code;		/* HTTP Response code */
+    char *response_code_line;	/* Readable response */
 
-	struct evbuffer *input_buffer;	/* read data */
-	ev_int64_t ntoread;
-	int chunked:1,                  /* a chunked request */
-	    userdone:1;                 /* the user has sent all data */
+    struct evbuffer *input_buffer;	/* read data */
+    ev_int64_t ntoread;
+    int chunked:1,                  /* a chunked request */
+        userdone:1;                 /* the user has sent all data */
 
-	struct evbuffer *output_buffer;	/* outgoing post or data */
+    struct evbuffer *output_buffer;	/* outgoing post or data */
 
-	/* Callback */
-	void (*cb)(struct evhttp_request *, void *);
-	void *cb_arg;
+    /* Callback */
+    void (*cb)(struct evhttp_request *, void *);
+    void *cb_arg;
 
-	/*
-	 * Chunked data callback - call for each completed chunk if
-	 * specified.  If not specified, all the data is delivered via
-	 * the regular callback.
-	 */
-	void (*chunk_cb)(struct evhttp_request *, void *);
+    /*
+     * Chunked data callback - call for each completed chunk if
+     * specified.  If not specified, all the data is delivered via
+     * the regular callback.
+     */
+    void (*chunk_cb)(struct evhttp_request *, void *);
 };
 
 /**
@@ -244,7 +244,7 @@ struct {
  * error occurred.
  */
 struct evhttp_request *evhttp_request_new(
-	void (*cb)(struct evhttp_request *, void *), void *arg);
+    void (*cb)(struct evhttp_request *, void *), void *arg);
 
 /** enable delivery of chunks to requestor */
 void evhttp_request_set_chunked_cb(struct evhttp_request *,
@@ -262,7 +262,7 @@ struct evhttp_connection *evhttp_request_get_connection(struct evhttp_request *r
  * http request object.
  */
 struct evhttp_connection *evhttp_connection_new(
-	const char *address, unsigned short port);
+    const char *address, unsigned short port);
 
 /** Frees an http connection */
 void evhttp_connection_free(struct evhttp_connection *evcon);

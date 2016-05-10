@@ -231,7 +231,7 @@ int evdns_init(void);
   the requests will be silently discarded.
 
   @param fail_requests if zero, active requests will be aborted; if non-zero,
-		active requests will return DNS_ERR_SHUTDOWN.
+        active requests will return DNS_ERR_SHUTDOWN.
   @see evdns_init()
  */
 void evdns_shutdown(int fail_requests);
@@ -471,22 +471,22 @@ void evdns_set_transaction_id_fn(ev_uint16_t (*fn)(void));
  */
 
 struct evdns_server_request {
-	int flags;
-	int nquestions;
-	struct evdns_server_question **questions;
+    int flags;
+    int nquestions;
+    struct evdns_server_question **questions;
 };
 struct evdns_server_question {
-	int type;
+    int type;
 #ifdef __cplusplus
-	int dns_question_class;
+    int dns_question_class;
 #else
-	/* You should refer to this field as "dns_question_class".  The
-	 * name "class" works in C for backward compatibility, and will be
-	 * removed in a future version. (1.5 or later). */
-	int class;
+    /* You should refer to this field as "dns_question_class".  The
+     * name "class" works in C for backward compatibility, and will be
+     * removed in a future version. (1.5 or later). */
+    int class;
 #define dns_question_class class
 #endif
-	char name[1];
+    char name[1];
 };
 typedef void (*evdns_request_callback_fn_type)(struct evdns_server_request *, void *);
 #define EVDNS_ANSWER_SECTION 0

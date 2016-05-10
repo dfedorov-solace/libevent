@@ -72,38 +72,38 @@ struct evrpc_req_generic;
 
 /* Encapsulates a request */
 struct evrpc {
-	TAILQ_ENTRY(evrpc) next;
+    TAILQ_ENTRY(evrpc) next;
 
-	/* the URI at which the request handler lives */
-	const char* uri;
+    /* the URI at which the request handler lives */
+    const char* uri;
 
-	/* creates a new request structure */
-	void *(*request_new)(void);
+    /* creates a new request structure */
+    void *(*request_new)(void);
 
-	/* frees the request structure */
-	void (*request_free)(void *);
+    /* frees the request structure */
+    void (*request_free)(void *);
 
-	/* unmarshals the buffer into the proper request structure */
-	int (*request_unmarshal)(void *, struct evbuffer *);
+    /* unmarshals the buffer into the proper request structure */
+    int (*request_unmarshal)(void *, struct evbuffer *);
 
-	/* creates a new reply structure */
-	void *(*reply_new)(void);
+    /* creates a new reply structure */
+    void *(*reply_new)(void);
 
-	/* creates a new reply structure */
-	void (*reply_free)(void *);
+    /* creates a new reply structure */
+    void (*reply_free)(void *);
 
-	/* verifies that the reply is valid */
-	int (*reply_complete)(void *);
-	
-	/* marshals the reply into a buffer */
-	void (*reply_marshal)(struct evbuffer*, void *);
+    /* verifies that the reply is valid */
+    int (*reply_complete)(void *);
+    
+    /* marshals the reply into a buffer */
+    void (*reply_marshal)(struct evbuffer*, void *);
 
-	/* the callback invoked for each received rpc */
-	void (*cb)(struct evrpc_req_generic *, void *);
-	void *cb_arg;
+    /* the callback invoked for each received rpc */
+    void (*cb)(struct evrpc_req_generic *, void *);
+    void *cb_arg;
 
-	/* reference for further configuration */
-	struct evrpc_base *base;
+    /* reference for further configuration */
+    struct evrpc_base *base;
 };
 
 /** The type of a specific RPC Message
@@ -117,27 +117,27 @@ struct evrpc_status;
 
 /* We alias the RPC specific structs to this voided one */
 struct evrpc_req_generic {
-	/* the unmarshaled request object */
-	void *request;
+    /* the unmarshaled request object */
+    void *request;
 
-	/* the empty reply object that needs to be filled in */
-	void *reply;
+    /* the empty reply object that needs to be filled in */
+    void *reply;
 
-	/* 
-	 * the static structure for this rpc; that can be used to
-	 * automatically unmarshal and marshal the http buffers.
-	 */
-	struct evrpc *rpc;
+    /* 
+     * the static structure for this rpc; that can be used to
+     * automatically unmarshal and marshal the http buffers.
+     */
+    struct evrpc *rpc;
 
-	/*
-	 * the http request structure on which we need to answer.
-	 */
-	struct evhttp_request* http_req;
+    /*
+     * the http request structure on which we need to answer.
+     */
+    struct evhttp_request* http_req;
 
-	/*
-	 * callback to reply and finish answering this rpc
-	 */
-	void (*done)(struct evrpc_req_generic* rpc); 
+    /*
+     * callback to reply and finish answering this rpc
+     */
+    void (*done)(struct evrpc_req_generic* rpc); 
 };
 
 /** Creates the definitions and prototypes for an RPC
@@ -153,17 +153,17 @@ struct evrpc_req_generic {
  */
 #define EVRPC_HEADER(rpcname, reqstruct, rplystruct) \
 EVRPC_STRUCT(rpcname) {	\
-	struct reqstruct* request; \
-	struct rplystruct* reply; \
-	struct evrpc* rpc; \
-	struct evhttp_request* http_req; \
-	void (*done)(struct evrpc_status *, \
-	    struct evrpc* rpc, void *request, void *reply);	     \
+    struct reqstruct* request; \
+    struct rplystruct* reply; \
+    struct evrpc* rpc; \
+    struct evhttp_request* http_req; \
+    void (*done)(struct evrpc_status *, \
+        struct evrpc* rpc, void *request, void *reply);	     \
 };								     \
 int evrpc_send_request_##rpcname(struct evrpc_pool *, \
     struct reqstruct *, struct rplystruct *, \
     void (*)(struct evrpc_status *, \
-	struct reqstruct *, struct rplystruct *, void *cbarg),	\
+    struct reqstruct *, struct rplystruct *, void *cbarg),	\
     void *);
 
 /** Generates the code for receiving and sending an RPC message
@@ -180,35 +180,35 @@ int evrpc_send_request_##rpcname(struct evrpc_pool *, \
 int evrpc_send_request_##rpcname(struct evrpc_pool *pool, \
     struct reqstruct *request, struct rplystruct *reply, \
     void (*cb)(struct evrpc_status *, \
-	struct reqstruct *, struct rplystruct *, void *cbarg),	\
+    struct reqstruct *, struct rplystruct *, void *cbarg),	\
     void *cbarg) { \
-	struct evrpc_status status;				    \
-	struct evrpc_request_wrapper *ctx;			    \
-	ctx = (struct evrpc_request_wrapper *) \
-	    malloc(sizeof(struct evrpc_request_wrapper));	    \
-	if (ctx == NULL)					    \
-		goto error;					    \
-	ctx->pool = pool;					    \
-	ctx->evcon = NULL;					    \
-	ctx->name = strdup(#rpcname);				    \
-	if (ctx->name == NULL) {				    \
-		free(ctx);					    \
-		goto error;					    \
-	}							    \
-	ctx->cb = (void (*)(struct evrpc_status *, \
-		void *, void *, void *))cb;			    \
-	ctx->cb_arg = cbarg;					    \
-	ctx->request = (void *)request;				    \
-	ctx->reply = (void *)reply;				    \
-	ctx->request_marshal = (void (*)(struct evbuffer *, void *))reqstruct##_marshal; \
-	ctx->reply_clear = (void (*)(void *))rplystruct##_clear;    \
-	ctx->reply_unmarshal = (int (*)(void *, struct evbuffer *))rplystruct##_unmarshal; \
-	return (evrpc_make_request(ctx));			    \
+    struct evrpc_status status;				    \
+    struct evrpc_request_wrapper *ctx;			    \
+    ctx = (struct evrpc_request_wrapper *) \
+        malloc(sizeof(struct evrpc_request_wrapper));	    \
+    if (ctx == NULL)					    \
+        goto error;					    \
+    ctx->pool = pool;					    \
+    ctx->evcon = NULL;					    \
+    ctx->name = strdup(#rpcname);				    \
+    if (ctx->name == NULL) {				    \
+        free(ctx);					    \
+        goto error;					    \
+    }							    \
+    ctx->cb = (void (*)(struct evrpc_status *, \
+        void *, void *, void *))cb;			    \
+    ctx->cb_arg = cbarg;					    \
+    ctx->request = (void *)request;				    \
+    ctx->reply = (void *)reply;				    \
+    ctx->request_marshal = (void (*)(struct evbuffer *, void *))reqstruct##_marshal; \
+    ctx->reply_clear = (void (*)(void *))rplystruct##_clear;    \
+    ctx->reply_unmarshal = (int (*)(void *, struct evbuffer *))rplystruct##_unmarshal; \
+    return (evrpc_make_request(ctx));			    \
 error:								    \
-	memset(&status, 0, sizeof(status));			    \
-	status.error = EVRPC_STATUS_ERR_UNSTARTED;		    \
-	(*(cb))(&status, request, reply, cbarg);		    \
-	return (-1);						    \
+    memset(&status, 0, sizeof(status));			    \
+    status.error = EVRPC_STATUS_ERR_UNSTARTED;		    \
+    (*(cb))(&status, request, reply, cbarg);		    \
+    return (-1);						    \
 }
 
 /** Provides access to the HTTP request object underlying an RPC
@@ -297,7 +297,7 @@ void evrpc_free(struct evrpc_base *base);
     struct evrpc* rpc = (struct evrpc *)calloc(1, sizeof(struct evrpc)); \
     EVRPC_REGISTER_OBJECT(rpc, name, request, reply); \
     evrpc_register_rpc(base, rpc, \
-	(void (*)(struct evrpc_req_generic*, void *))callback, cbarg);	\
+    (void (*)(struct evrpc_req_generic*, void *))callback, cbarg);	\
   } while (0)
 
 int evrpc_register_rpc(struct evrpc_base *, struct evrpc *,
@@ -331,42 +331,42 @@ struct evrpc_status {
 #define EVRPC_STATUS_ERR_BADPAYLOAD	2
 #define EVRPC_STATUS_ERR_UNSTARTED	3
 #define EVRPC_STATUS_ERR_HOOKABORTED	4
-	int error;
+    int error;
 
-	/* for looking at headers or other information */
-	struct evhttp_request *http_req;
+    /* for looking at headers or other information */
+    struct evhttp_request *http_req;
 };
 
 struct evrpc_request_wrapper {
-	TAILQ_ENTRY(evrpc_request_wrapper) next;
+    TAILQ_ENTRY(evrpc_request_wrapper) next;
 
         /* pool on which this rpc request is being made */
         struct evrpc_pool *pool;
 
         /* connection on which the request is being sent */
-	struct evhttp_connection *evcon;
+    struct evhttp_connection *evcon;
 
-	/* event for implementing request timeouts */
-	struct event ev_timeout;
+    /* event for implementing request timeouts */
+    struct event ev_timeout;
 
-	/* the name of the rpc */
-	char *name;
+    /* the name of the rpc */
+    char *name;
 
-	/* callback */
-	void (*cb)(struct evrpc_status*, void *request, void *reply, void *arg);
-	void *cb_arg;
+    /* callback */
+    void (*cb)(struct evrpc_status*, void *request, void *reply, void *arg);
+    void *cb_arg;
 
-	void *request;
-	void *reply;
+    void *request;
+    void *reply;
 
-	/* unmarshals the buffer into the proper request structure */
-	void (*request_marshal)(struct evbuffer *, void *);
+    /* unmarshals the buffer into the proper request structure */
+    void (*request_marshal)(struct evbuffer *, void *);
 
-	/* removes all stored state in the reply */
-	void (*reply_clear)(void *);
+    /* removes all stored state in the reply */
+    void (*reply_clear)(void *);
 
-	/* marshals the reply into a buffer */
-	int (*reply_unmarshal)(void *, struct evbuffer*);
+    /* marshals the reply into a buffer */
+    int (*reply_unmarshal)(void *, struct evbuffer*);
 };
 
 /** launches an RPC and sends it to the server
@@ -385,7 +385,7 @@ struct evrpc_request_wrapper {
  * @return 0 on success, -1 on failure
  */
 #define EVRPC_MAKE_REQUEST(name, pool, request, reply, cb, cbarg)	\
-	evrpc_send_request_##name(pool, request, reply, cb, cbarg)
+    evrpc_send_request_##name(pool, request, reply, cb, cbarg)
 
 int evrpc_make_request(struct evrpc_request_wrapper *);
 
@@ -436,8 +436,8 @@ void evrpc_pool_set_timeout(struct evrpc_pool *pool, int timeout_in_secs);
  */
 
 enum EVRPC_HOOK_TYPE {
-	EVRPC_INPUT,		/**< apply the function to an input hook */
-	EVRPC_OUTPUT		/**< apply the function to an output hook */
+    EVRPC_INPUT,		/**< apply the function to an input hook */
+    EVRPC_OUTPUT		/**< apply the function to an output hook */
 };
 
 #ifndef WIN32

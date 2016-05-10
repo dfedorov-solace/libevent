@@ -203,35 +203,35 @@ typedef unsigned short u_short;
 #define _EVENT_DEFINED_TQENTRY
 #define TAILQ_ENTRY(type)						\
 struct {								\
-	struct type *tqe_next;	/* next element */			\
-	struct type **tqe_prev;	/* address of previous next element */	\
+    struct type *tqe_next;	/* next element */			\
+    struct type **tqe_prev;	/* address of previous next element */	\
 }
 #endif /* !TAILQ_ENTRY */
 
 struct event_base;
 #ifndef EVENT_NO_STRUCT
 struct event {
-	TAILQ_ENTRY (event) ev_next;
-	TAILQ_ENTRY (event) ev_active_next;
-	TAILQ_ENTRY (event) ev_signal_next;
-	unsigned int min_heap_idx;	/* for managing timeouts */
+    TAILQ_ENTRY (event) ev_next;
+    TAILQ_ENTRY (event) ev_active_next;
+    TAILQ_ENTRY (event) ev_signal_next;
+    unsigned int min_heap_idx;	/* for managing timeouts */
 
-	struct event_base *ev_base;
+    struct event_base *ev_base;
 
-	int ev_fd;
-	short ev_events;
-	short ev_ncalls;
-	short *ev_pncalls;	/* Allows deletes in callback */
+    int ev_fd;
+    short ev_events;
+    short ev_ncalls;
+    short *ev_pncalls;	/* Allows deletes in callback */
 
-	struct timeval ev_timeout;
+    struct timeval ev_timeout;
 
-	int ev_pri;		/* smaller numbers are higher priority */
+    int ev_pri;		/* smaller numbers are higher priority */
 
-	void (*ev_callback)(int, short, void *arg);
-	void *ev_arg;
+    void (*ev_callback)(int, short, void *arg);
+    void *ev_arg;
 
-	int ev_res;		/* result passed to event callback */
-	int ev_flags;
+    int ev_res;		/* result passed to event callback */
+    int ev_flags;
 };
 #else
 struct event;
@@ -245,10 +245,10 @@ struct event;
  * query argument parsing.
  */
 struct evkeyval {
-	TAILQ_ENTRY(evkeyval) next;
+    TAILQ_ENTRY(evkeyval) next;
 
-	char *key;
-	char *value;
+    char *key;
+    char *value;
 };
 
 #ifdef _EVENT_DEFINED_TQENTRY
@@ -346,7 +346,7 @@ typedef void (*event_log_cb)(int severity, const char *msg);
 
   @param cb a function taking two arguments: an integer severity between
      _EVENT_LOG_DEBUG and _EVENT_LOG_ERR, and a string.  If cb is NULL,
-	 then the default log is used.
+     then the default log is used.
   */
 void event_set_log_callback(event_log_cb cb);
 
@@ -512,7 +512,7 @@ int event_base_loopbreak(struct event_base *);
 
 #define signal_add(ev, tv)		event_add(ev, tv)
 #define signal_set(ev, x, cb, arg)	\
-	event_set(ev, x, EV_SIGNAL|EV_PERSIST, cb, arg)
+    event_set(ev, x, EV_SIGNAL|EV_PERSIST, cb, arg)
 #define signal_del(ev)			event_del(ev)
 #define signal_pending(ev, tv)		event_pending(ev, EV_SIGNAL, tv)
 #define signal_initialized(ev)		((ev)->ev_flags & EVLIST_INIT)
@@ -724,15 +724,15 @@ int	event_priority_set(struct event *, int);
 /* These functions deal with buffering input and output */
 
 struct evbuffer {
-	u_char *buffer;
-	u_char *orig_buffer;
+    u_char *buffer;
+    u_char *orig_buffer;
 
-	size_t misalign;
-	size_t totallen;
-	size_t off;
+    size_t misalign;
+    size_t totallen;
+    size_t off;
 
-	void (*cb)(struct evbuffer *, size_t, size_t, void *);
-	void *cbarg;
+    void (*cb)(struct evbuffer *, size_t, size_t, void *);
+    void *cbarg;
 };
 
 /* Just for error reporting - use other constants otherwise */
@@ -747,32 +747,32 @@ typedef void (*evbuffercb)(struct bufferevent *, void *);
 typedef void (*everrorcb)(struct bufferevent *, short what, void *);
 
 struct event_watermark {
-	size_t low;
-	size_t high;
+    size_t low;
+    size_t high;
 };
 
 #ifndef EVENT_NO_STRUCT
 struct bufferevent {
-	struct event_base *ev_base;
+    struct event_base *ev_base;
 
-	struct event ev_read;
-	struct event ev_write;
+    struct event ev_read;
+    struct event ev_write;
 
-	struct evbuffer *input;
-	struct evbuffer *output;
+    struct evbuffer *input;
+    struct evbuffer *output;
 
-	struct event_watermark wm_read;
-	struct event_watermark wm_write;
+    struct event_watermark wm_read;
+    struct event_watermark wm_write;
 
-	evbuffercb readcb;
-	evbuffercb writecb;
-	everrorcb errorcb;
-	void *cbarg;
+    evbuffercb readcb;
+    evbuffercb writecb;
+    everrorcb errorcb;
+    void *cbarg;
 
-	int timeout_read;	/* in seconds */
-	int timeout_write;	/* in seconds */
+    int timeout_read;	/* in seconds */
+    int timeout_write;	/* in seconds */
 
-	short enabled;	/* events that are currently enabled */
+    short enabled;	/* events that are currently enabled */
 };
 #endif
 
@@ -797,7 +797,7 @@ struct bufferevent {
   enabling the bufferevent for the first time.
 
   @param fd the file descriptor from which data is read and written to.
-  		This file descriptor is not allowed to be a pipe(2).
+        This file descriptor is not allowed to be a pipe(2).
   @param readcb callback to invoke when there is data to be read, or NULL if
          no callback is desired
   @param writecb callback to invoke when the file descriptor is ready for
@@ -1033,14 +1033,14 @@ char *evbuffer_readline(struct evbuffer *);
 /** Used to tell evbuffer_readln what kind of line-ending to look for.
  */
 enum evbuffer_eol_style {
-	/** Any sequence of CR and LF characters is acceptable as an EOL. */
-	EVBUFFER_EOL_ANY,
-	/** An EOL is an LF, optionally preceded by a CR.  This style is
-	 * most useful for implementing text-based internet protocols. */
-	EVBUFFER_EOL_CRLF,
-	/** An EOL is a CR followed by an LF. */
-	EVBUFFER_EOL_CRLF_STRICT,
-	/** An EOL is a LF. */
+    /** Any sequence of CR and LF characters is acceptable as an EOL. */
+    EVBUFFER_EOL_ANY,
+    /** An EOL is an LF, optionally preceded by a CR.  This style is
+     * most useful for implementing text-based internet protocols. */
+    EVBUFFER_EOL_CRLF,
+    /** An EOL is a CR followed by an LF. */
+    EVBUFFER_EOL_CRLF_STRICT,
+    /** An EOL is a LF. */
         EVBUFFER_EOL_LF
 };
 
